@@ -4,6 +4,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { toasterror, toastsuccess } from './Toast';
 
 const NewEmployee = () => {
+  console.log(import.meta.env.VITE_PRODUCTION == 'true' ? import.meta.env.VITE_URL_LIVE : import.meta.env.VITE_URL_LOCAL)
   const {
     register,
     handleSubmit,
@@ -23,13 +24,13 @@ const NewEmployee = () => {
   const onSubmit = async (data) => {
     console.log('Structured Data:', data);
     try {
-      const response = await fetch('http://localhost:8080/employee/setdata', {
+      const response = await fetch(`${import.meta.env == 'true' ? import.meta.env.VITE_URL_LIVE : import.meta.env.VITE_URL_LOCAL}/employee/setdata`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({data}),
+        body: JSON.stringify({ data }),
       })
       const result = await response.json();
       if (response.ok) {
@@ -169,17 +170,16 @@ const NewEmployee = () => {
             {fields.map((item, index) => (
               <ChildInfoSection key={item.id} index={index} register={register} />
             ))}
-
-            <button
-              type="button"
-              onClick={() => append({})}
-              className="mt-2 px-4 py-2 hover:bg-blue-300 hover:text-white rounded border border-blue-400 "
-            >
-              + Add Child
-            </button>
           </div>
-        </div>
+          <button
+            type="button"
+            onClick={() => append({})}
+            className="mt-2 px-4 py-2 hover:bg-blue-300 hover:text-white rounded border border-blue-400  bg-white"
+          >
+            + Add Child
+          </button>
 
+        </div>
         <input
           type="submit"
           value="submit"

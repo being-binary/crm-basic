@@ -5,6 +5,7 @@ import { BrowserRouter, Routes , Route} from 'react-router-dom'
 import Home from './pages/Home'
 import Navbar from './components/Navbar'
 import { ToastContainer } from 'react-toastify'
+import Footer from './components/Footer'
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
         <Route path={'/'} element={<Home/>}/>
       </Routes>
       <ToastContainer />
+      <Footer/>
     </BrowserRouter>
   )
 }

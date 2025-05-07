@@ -1,6 +1,7 @@
 import { User } from "../Models/userModel.js";
 import jwt from "jsonwebtoken";
-
+import dotenv from 'dotenv'
+dotenv.config()
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -18,7 +19,7 @@ export const login = async (req, res) => {
             id:user._id
         }
 
-        const token = jwt.sign(payload,process.env.JWT_SECURE);
+        const token = jwt.sign(payload,process.env.JWT_KEY);
 
         res.cookie("token",token);
 
