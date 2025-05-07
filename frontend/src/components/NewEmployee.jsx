@@ -16,7 +16,11 @@ const NewEmployee = () => {
     },
   });
 
-  const { fields, append } = useFieldArray({
+  const handleRemove = (index)=>{
+    remove(index)
+  }
+
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'children',
   });
@@ -24,7 +28,7 @@ const NewEmployee = () => {
   const onSubmit = async (data) => {
     console.log('Structured Data:', data);
     try {
-      const response = await fetch(`${import.meta.env == 'true' ? import.meta.env.VITE_URL_LIVE : import.meta.env.VITE_URL_LOCAL}/employee/setdata`, {
+      const response = await fetch(`${import.meta.env.VITE_PRODUCTION == 'true' ? import.meta.env.VITE_URL_LIVE : import.meta.env.VITE_URL_LOCAL}/employee/setdata`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -168,7 +172,7 @@ const NewEmployee = () => {
           <h1 className="section-title">Family Information</h1>
           <div className='form-grid'>
             {fields.map((item, index) => (
-              <ChildInfoSection key={item.id} index={index} register={register} />
+              <ChildInfoSection key={item.id} index={index} register={register} handleRemove={handleRemove} />
             ))}
           </div>
           <button
