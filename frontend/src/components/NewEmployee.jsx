@@ -80,7 +80,6 @@ const NewEmployee = () => {
             <label htmlFor="father_lname">Father Last Name</label>
             <input id="father_lname" {...register('father_lname')} />
           </div>
-
           <div className="flex flex-col gap-2">
             <label htmlFor="emp_code">Employee Code</label>
             <input placeholder='ex.. 40059850' type="number" id="emp_code" {...register('emp_code', { required: 'Employee code is required' })} />
