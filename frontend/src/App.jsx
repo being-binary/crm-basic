@@ -4,6 +4,7 @@ import './App.css'
 import { BrowserRouter, Routes , Route} from 'react-router-dom'
 import Home from './pages/Home'
 import Navbar from './components/Navbar'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path={'/'} element={<Home/>}/>
       </Routes>
+      <ToastContainer />
     </BrowserRouter>
   )
 }
