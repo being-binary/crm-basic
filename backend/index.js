@@ -1,6 +1,8 @@
 import express from "express";
 import { connectdb } from "./Config/connectDB.js";
+import fileUploadRoutes from "./Router/fileUploadRoutes.js";
 import employeeRouter from "./Router/employeeRouter.js";
+import attendanceRouter from './Router/atttendanceRoutes.js'
 import cors from 'cors'
 const port = 8080
 const app = express();
@@ -16,8 +18,10 @@ app.get('/', (req, res)=>{
     res.send('hello')
 })
 
-app.use('/employee', employeeRouter)
 
+app.use('/employee', employeeRouter)
+app.use('/fileUpload', fileUploadRoutes)
+app.use('/attendance', attendanceRouter)
 connectdb().then(()=>{
     app.listen(port,()=>{
         console.log(`Server is listening on http://localhost:${port}`)
