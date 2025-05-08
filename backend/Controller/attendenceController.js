@@ -24,31 +24,33 @@ class Attendance {
 
         } catch (error) {
             console.error('Error saving attendance data:', error);
-            return res.status(500).json({ message: 'Internal Server Error' , err:error });
+            return res.status(500).json({ message: 'Internal Server Error', err: error });
         }
     }
 
     async getData(req, res) {
         try {
-            // Optional: Add filtering by query params if needed
-            // const { empId, department } = req.query;
-            const limit = parseInt(req.query.limit) || 10; // Default to 10 if not provided
+            const limit = parseInt(req.query.limit) || 10;
+            const page = parseInt(req.query.page) || 1;
 
-            const records = await AttendanceModel.find().limit(limit);
-    
-            if (!records || records.length === 0) {
-                return res.status(404).json({ message: 'No attendance records found' });
-            }
-    
+            const skip = (page - 1) * limit;
+
+            const records = await AttendanceModel.find().skip(skip).limit(limit);
+            const total = await AttendanceModel.countDocuments();
+
             return res.status(200).json({
-                message: 'Attendance data retrieved successfully',
-                data: records
+                message: 'Paginated attendance data',
+                data: records,
+                total,
+                page,
+                totalPages: Math.ceil(total / limit)
             });
         } catch (error) {
-            console.error('Error fetching attendance data:', error);
-            return res.status(500).json({ message: 'Internal Server Error' });
+            console.error('Error fetching paginated data:', error);
+            return res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+
 }
 
 

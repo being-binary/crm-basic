@@ -1,5 +1,4 @@
 import { useState } from 'react'
-
 import './App.css'
 import { BrowserRouter, Routes , Route} from 'react-router-dom'
 import Home from './pages/Home'
@@ -9,13 +8,13 @@ import Footer from './components/Footer'
 import Attendence from './pages/Attendence'
 
 function App() {
-
+    const [data, setData] = useState([])
   return (
     <BrowserRouter>
       <Navbar/>
       <Routes>
         <Route path={'/'} element={<Home/>}/>
-        <Route path={'/attendence'} element={<Attendence/>}/>
+        <Route path={'/attendence'} element={<Attendence data={data} setData={setData}/>}/>
       </Routes>
       <ToastContainer />
       <Footer/>

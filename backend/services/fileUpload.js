@@ -55,12 +55,10 @@ class FileUpload {
                 readWorkbook(file.path) // ✅ fixed file extension
                     .then(workbook => {
                         const worksheet = workbook.getWorksheet(1); // First sheet
-                        console.log(workbook.worksheets[0].name)
                         const dateRow = workbook.worksheets[0].getRow(3);
                         const attendanceDates = dateRow.values.slice(7, 38).map(date => {
                             return new Date(date).toISOString().split('T')[0];
                         });
-                        console.log(attendanceDates)
                         workbook.worksheets[0].eachRow((row, rowNumber) => {
                             if (rowNumber === 1) return;
                             const values = row.values;

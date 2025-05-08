@@ -1,29 +1,43 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toasterror, toastsuccess } from '../components/Toast';
 import Table from '../components/Table';
 
-const Attendence = () => {
-  const [data, setData] = useState([])
+const Attendence = ({ data, setData }) => {
   const [files, setFiles] = useState([]);
+  const [totalPage, setTotalPage] = useState(0);
+  const [page, setPage] = useState(1);
   console.log(files)
   const handleFileChange = (e) => {
     setFiles([...e.target.files]); // use e.target.files to access file list
   };
+
+  const handlepagination = (count)=>{
+    if (count >= 0 && count <= totalPage){
+      setPage(count)
+    }else{
+      return
+    }
+
+  }
+
+  useEffect(()=>{
+    fetchData()
+  },[page])
 
   const fetchData = async () => {
     try {
       const formData = new FormData();
       console.log(Array.isArray(files))
       files.forEach((file, index) => formData.append(`file`, file));
-      const response = await fetch(`${import.meta.env.VITE_PRODUCTION == 'true' ? import.meta.env.VITE_URL_LIVE : import.meta.env.VITE_URL_LOCAL}/attendance/getdata`, {
+      const response = await fetch(`${import.meta.env.VITE_PRODUCTION == 'true' ? import.meta.env.VITE_URL_LIVE : import.meta.env.VITE_URL_LOCAL}/attendance/getdata?page=${page}&limit=10`, {
         method: 'GET',
         credentials: 'include',
       })
       const result = await response.json();
       if (response.ok) {
         console.log(result.message, result);
-        toastsuccess(result.message)
         setData(result.data)
+        setTotalPage(result.totalPages)
         // Optionally reset form or show success message
       } else {
         console.error(result.message, result);
@@ -62,9 +76,9 @@ const Attendence = () => {
   }
 
   return (
-    <div className='w-full bg-gray-200'>
+    <div className='w-full bg-gray-200 min-h-[calc(90vh-65px)]'>
       <div className='p-3'>
-        <div className="section-title">Employee Information</div>
+        <div className="section-title capitalize">Attendance file section</div>
         <form className='form-grid-attendence' onSubmit={handleSubmit}>
           <label htmlFor="fileUpload">Upload File :</label>
           <label
@@ -83,9 +97,25 @@ const Attendence = () => {
       </div>
 
       {data.length > 0 && <div className='mt-3 p-3'>
-        <div className="section-title">Employee Information</div>
+        <div className="section-title">Employee Information Table</div>
         <div className='form-grid-table'>
-          <Table data={data}/>
+          <Table data={data} />
+        </div>
+        <div className='flex flex-row justify-between'>
+        <button
+            type="button"
+            onClick={() => handlepagination(page-1)}
+            className="mt-2 px-4 py-2 hover:bg-blue-300 hover:text-white rounded border border-blue-400  bg-white"
+          >
+            Prev
+          </button>
+          <button
+            type="button"
+            onClick={() => handlepagination(page+1)}
+            className="mt-2 px-4 py-2 hover:bg-blue-300 hover:text-white rounded border border-blue-400  bg-white"
+          >
+            Next
+          </button>
         </div>
       </div>}
     </div>
