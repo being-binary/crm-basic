@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import ChildInfoSection from './ChildInfoSection';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { toasterror, toastsuccess } from './Toast';
-
+import { BiMinusCircle } from "react-icons/bi";
 const NewEmployee = () => {
+  const [files, setFiles] = useState([]);
+  const handleFileChange = (e) => {
+    setFiles([...files,  ...e.target.files]); // use e.target.files to access file list
+  }
   console.log(import.meta.env.VITE_PRODUCTION == 'true' ? import.meta.env.VITE_URL_LIVE : import.meta.env.VITE_URL_LOCAL)
   const {
     register,
@@ -16,9 +20,15 @@ const NewEmployee = () => {
     },
   });
 
-  const handleRemove = (index)=>{
+  const handleRemove = (index) => {
     remove(index)
   }
+
+  const handleRemoveFile = (index) => {
+    const updatedFiles = files.filter((_, i) => i !== index);
+    setFiles(updatedFiles);
+  };
+  
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -26,15 +36,15 @@ const NewEmployee = () => {
   });
 
   const onSubmit = async (data) => {
+    const formData = new FormData()
     console.log('Structured Data:', data);
+    formData.append('data',JSON.stringify(data))
+    files.forEach((file)=>formData.append('file', file))
     try {
       const response = await fetch(`${import.meta.env.VITE_PRODUCTION == 'true' ? import.meta.env.VITE_URL_LIVE : import.meta.env.VITE_URL_LOCAL}/employee/setdata`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         credentials: 'include',
-        body: JSON.stringify({ data }),
+        body: formData,
       })
       const result = await response.json();
       if (response.ok) {
@@ -57,7 +67,7 @@ const NewEmployee = () => {
       <div className='px-4'>
         <div className="section-title">Employee Information</div>
         <div className="form-grid">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-[4.9px]">
             <label htmlFor="div">DIV</label>
             <input id="div" {...register('div', { required: 'DIV is required' })} />
             {errors.div && <p className="text-red-500">{errors.div.message}</p>}
@@ -84,6 +94,9 @@ const NewEmployee = () => {
 
             <label htmlFor="father_lname">Father Last Name</label>
             <input id="father_lname" {...register('father_lname')} />
+
+            <label htmlFor="salary">Salary</label>
+            <input id="number" {...register('salary')} />
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="emp_code">Employee Code</label>
@@ -148,6 +161,8 @@ const NewEmployee = () => {
               <h3 className="font-semibold mb-2">Bank Details</h3>
               <label htmlFor="bank">Bank</label>
               <input id="bank" {...register('bank')} />
+              <label htmlFor="bank_branch">Bank branch</label>
+              <input id="bank_branch" {...register('bank_branch')} />
               <label htmlFor="account">Account No</label>
               <input id="account" {...register('account')} />
               <label htmlFor="ifsc">IFSC Code</label>
@@ -182,7 +197,29 @@ const NewEmployee = () => {
           >
             + Add Child
           </button>
-
+          <div className='mt-2'>
+            <h1 className="section-title">File Upload</h1>
+            <div className='form-grid-table'>
+              <ol className='px-4 '>
+                {files.length > 0 && files.map((file, index) => {
+                  return (
+                    <li key={index} className='flex flex-row justify-between'> <p>{file.name}</p> <span><BiMinusCircle className='text-xl hover:text-red-500' onClick={()=>handleRemoveFile(index)} /></span></li>
+                  )
+                })
+                }
+              </ol>
+              
+            </div>
+            <div className='mt-4 '>
+            <label
+                htmlFor='upload_file'
+                className="max-w-30 px-4 py-2 hover:bg-blue-300 hover:text-white rounded border border-blue-400  bg-white"
+              >
+                + Add File
+              </label>
+              <input type="file" name="upload_file" id="upload_file" onChange={handleFileChange} hidden />  
+            </div>
+          </div>
         </div>
         <input
           type="submit"

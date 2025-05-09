@@ -35,68 +35,94 @@ class FileUpload {
         }
 
         try {
-            function readWorkbook(filename) {
+            const finalData = [];
+            async function readWorkbook(filename) {
                 const workbook = new ExcelJS.Workbook();
-                return workbook.xlsx.readFile(filename).then(() => workbook);
+                await workbook.xlsx.readFile(filename);
+                return workbook;
             }
 
             function getCellValue(cell) {
-                if (cell && typeof cell === 'object' && 'result' in cell) {
-
-                    return cell.result;
+                if (cell && typeof cell === 'object') {
+                    if ('result' in cell) {
+                        return cell.result
+                    } else {
+                        return 0
+                    }
                 }
                 return cell || '';
             }
 
-            const finalData = []
             for (const file of req.files) {
-                const data = []
+                const workbook = await readWorkbook(file.path);
 
-                readWorkbook(file.path) // ✅ fixed file extension
-                    .then(workbook => {
-                        const worksheet = workbook.getWorksheet(1); // First sheet
-                        const dateRow = workbook.worksheets[0].getRow(3);
-                        const attendanceDates = dateRow.values.slice(7, 38).map(date => {
-                            return new Date(date).toISOString().split('T')[0];
-                        });
-                        workbook.worksheets[0].eachRow((row, rowNumber) => {
-                            if (rowNumber === 1) return;
-                            const values = row.values;
-                            const record = {
-                                empId: getCellValue(values[2]),
-                                empName: getCellValue(values[3]),
-                                department: getCellValue(values[4]),
-                                unitName: getCellValue(values[5]),
-                                costCode: getCellValue(values[6]),
-                                attendance: Object.fromEntries(
-                                    attendanceDates.map((date, i) => [date, getCellValue(values[7 + i])])
-                                ),
-                                // attendance: values.slice(7, 38).map(getCellValue), // G4 to AK4: 35 items
-                                totalDays: getCellValue(values[38]),
-                                totalWorkingDays: getCellValue(values[40]),             // AL4
-                                lateCome: getCellValue(values[41]),               // AM4
-                                paidDays: getCellValue(values[42]),               // AN4
-                                carryForward: getCellValue(values[43]),           // AO4
-                                div: getCellValue(values[44])                     // AP4
-                            };
-                            data.push(record)
-                        });
+                for (const sheet of workbook.worksheets) {
+                    console.log(`Processing sheet: ${sheet.name}`);
 
-                        finalData.push(...data)
-                        req.finaldata = finalData
-                        fs.unlink(file.path, (err) => {
-                            if (err) {
-                                console.error('Error deleting file:', err);
-                            }
-                        });
-                        next()
-                    })
-                    .catch(err => {
-                        console.error('Failed to read Excel file:', err);
-                        res.status(400).json({ message: err.message, success: false });
+                    const dateRow = sheet.getRow(3);
+                    const attendanceDates = dateRow.values.slice(7, 38).map(date => {
+                        if (!date) return '';
+                        return new Date(date).toISOString().split('T')[0];
                     });
 
+                    sheet.eachRow((row, rowNumber) => {
+                        if (rowNumber <= 3) return;
+
+                        const values = row.values;
+
+                        const division = getCellValue(values[44]) || getCellValue(values[40]);
+
+                        const record = {
+                            sheet: sheet.name,
+                            emp_code: getCellValue(values[2]),
+                            empName: getCellValue(values[3]),
+                            department: getCellValue(values[4]),
+                            unitName: getCellValue(values[5]),
+                            costCode: getCellValue(values[6]),
+                            days: Object.fromEntries(
+                                attendanceDates.map((date, i) => [date, getCellValue(values[7 + i])])
+                            ),
+                            total: getCellValue(values[38]),
+                            div: division
+                        };
+
+                        finalData.push(record);
+                    });
+                }
+
+                // Clean up file after reading
+                fs.unlink(file.path, (err) => {
+                    if (err) {
+                        console.error('Error deleting file:', err);
+                    }
+                });
             }
+            req.finaldata = finalData;
+            return next();
+        } catch (err) {
+            console.error('Upload processing failed:', err);
+            return res.status(400).json({ message: err.message, success: false });
+        }
+    }
+
+    async uploadEmployeesFiles(req, res, next) {
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ msg: 'No files uploaded', success: false });
+        }
+
+        try {
+            console.log(req.files)
+            const filesData = []
+            for (const file of req.files) {
+                const filedata = {
+                    fileName: file.originalname,
+                    path: file.path,
+                    mimeType: file.mimetype,
+                    size: file.size
+                }
+                filesData.push(filedata)
+            }
+            req.filesData = filesData
             // res.status(200).json({
             //     msg: 'File processed successfully',
             //     success: true,
@@ -112,13 +138,12 @@ class FileUpload {
             //         }
             //     });
             // }
-            // next()
+            next()
         } catch (err) {
             console.log(err)
             res.status(400).json({ message: err.message, success: false });
         }
     }
-
 }
 
 export default new FileUpload()

@@ -14,9 +14,10 @@ class Attendance {
             // await AttendanceModel.deleteMany({});
 
             // Save each record
-            const cleanedData = data.filter(record => record.empId);
+            const cleanedData = data.filter(record => record.emp_code);
+            console.log(cleanedData)
             const result = await AttendanceModel.insertMany(cleanedData);
-
+            console.log('clea',cleanedData[0])
             return res.status(200).json({
                 message: 'Attendance data saved successfully',
                 count: result.length
