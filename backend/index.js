@@ -8,7 +8,7 @@ const port = 8080
 const app = express();
 
 app.use(cors({
-    origin: ['https://crm-basic-lemon.vercel.app/','http://localhost:5173'], // your frontend origin
+    origin: ['https://crm-basic-lemon.vercel.app','http://localhost:5173'], // your frontend origin
     credentials: true,
   }))
 app.use(express.json());
