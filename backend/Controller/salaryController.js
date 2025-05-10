@@ -101,6 +101,9 @@ class Salary {
         }
     }
 
+    async SalaryExcelUpload(req, res){
+        
+    }
 }
 
 export default new Salary()
