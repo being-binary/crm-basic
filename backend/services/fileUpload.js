@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { promises as fs } from 'fs';
 import ExcelJS from 'exceljs'
+const BASE_DIR = path.resolve('uploads'); // or wherever your base folder is
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -116,28 +117,13 @@ class FileUpload {
             for (const file of req.files) {
                 const filedata = {
                     fileName: file.originalname,
-                    path: file.path,
+                    path: path.join(BASE_DIR, file.filename),
                     mimeType: file.mimetype,
                     size: file.size
                 }
                 filesData.push(filedata)
             }
             req.filesData = filesData
-            // res.status(200).json({
-            //     msg: 'File processed successfully',
-            //     success: true,
-            //     data: allDocs,
-            // });
-            // res.status(200).json({ msg: 'success upload', })
-            // Process the file (e.g., upload to cloud storage)
-            // After processing, delete the file
-            // for (const file of req.files) {
-            //     await fs.unlink(file.path, (err) => {
-            //         if (err) {
-            //             console.error('Error deleting file:', err);
-            //         }
-            //     });
-            // }
             next()
         } catch (err) {
             console.log(err)

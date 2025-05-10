@@ -3,6 +3,8 @@ import { connectdb } from "./Config/connectDB.js";
 import fileUploadRoutes from "./Router/fileUploadRoutes.js";
 import employeeRouter from "./Router/employeeRouter.js";
 import attendanceRouter from './Router/atttendanceRoutes.js'
+import salaryController from "./Controller/salaryController.js";
+import { userRouter } from "./Router/userRouter.js";
 import cors from 'cors'
 const port = 8080
 const app = express();
@@ -18,7 +20,8 @@ app.get('/', (req, res)=>{
     res.send('hello')
 })
 
-
+salaryController.Calculate()
+app.use('/users',userRouter)
 app.use('/employee', employeeRouter)
 app.use('/fileUpload', fileUploadRoutes)
 app.use('/attendance', attendanceRouter)

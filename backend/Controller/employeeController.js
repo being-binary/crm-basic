@@ -29,6 +29,21 @@ class EmployeeController {
             res.status(500).json({ error: error.message })
         }
     }
+
+    async getAllEmployee(req,res){
+        try {
+            const Allemp = await Employee.find({}).sort({ createdAt: -1 }).lean();
+            
+            if(!Allemp){
+                res.status(400).json({message:"Some Internal Server Error"})
+            }
+
+            res.status(200).json({Allemp});
+        } catch (error) {
+            console.log("Error",error.message)
+            res.status(500).json({message:"Internal Server Error"});
+        }
+    }
 }
 
 
