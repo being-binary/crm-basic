@@ -10,7 +10,7 @@ const port = 8080
 const app = express();
 
 app.use(cors({
-    origin: ['https://crm-basic-2.vercel.app','http://localhost:5173'], // your frontend origin
+    origin: ['https://crm-basic-2.vercel.app','http://localhost:5173', '*'], // your frontend origin
     credentials: true,
   }))
 app.use(express.json());
@@ -20,7 +20,7 @@ app.get('/', (req, res)=>{
     res.send('hello')
 })
 
-salaryController.Calculate()
+
 app.use('/users',userRouter)
 app.use('/employee', employeeRouter)
 app.use('/fileUpload', fileUploadRoutes)
