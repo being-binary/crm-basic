@@ -12,11 +12,11 @@ class EmployeeController {
             const { data } = req.body
             const { filesData } = req
             const parsedata = JSON.parse(data)
-            console.log(data)
-            console.log(filesData)
-            // Log both data and filesData for debugging
-            console.log('Employee Data:', parsedata);
-            console.log('Files Data:', filesData);
+            // console.log(data)
+            // console.log(filesData)
+            // // Log both data and filesData for debugging
+            // console.log('Employee Data:', parsedata);
+            // console.log('Files Data:', filesData);
             
             if (filesData && Array.isArray(filesData) && filesData.length > 0) {
                 parsedata.documents = [...filesData];  // Attach filesData to employee data

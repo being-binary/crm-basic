@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CRM - New Employee</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f5f5f5;
+    }
+    .navbar {
+      background: #2d4e83;
+      color: white;
+      padding: 10px;
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+    }
+    .navbar div:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .container {
+      padding: 15px;
+    }
+    .section-title {
+      background: #0073cf;
+      color: white;
+      padding: 5px;
+      font-weight: bold;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: white;
+      padding: 10px;
+      gap: 10px;
+      border: 1px solid #ccc;
+    }
+    .form-grid label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+    .form-grid input,
+    .form-grid select,
+    .form-grid textarea {
+      width: 95%;
+      padding: 5px;
+      font-size: 13px;
+      border: 1px solid #aaa;
+    }
+    .buttons {
+      margin: 10px 0;
+    }
+    .buttons button {
+      margin-right: 5px;
+      padding: 5px 10px;
+    }
+    .sidebar {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      width: 250px;
+      background: #e9e9e9;
+      border-left: 1px solid #ccc;
+      padding: 10px;
+      height: 90vh;
+    }
+    .sidebar h4 {
+      margin-top: 0;
+    }
+    .small-input {
+      width: 80px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <div>Campaigns</div>
+    <div>Leads</div>
+    <div>Accounts</div>
+    <div>Contacts</div>
+    <div>Opportunities</div>
+    <div>Quotes</div>
+    <div>Invoices</div>
+  </div>
+
+  <div class="container">
+    <h2>📝 New Employee</h2>
+
+    <div class="buttons">
+      <button>Save</button>
+      <button>Save & New</button>
+      <button>Cancel</button>
+      <button>Check Spelling</button>
+    </div>
+
+    <div class="section-title">Employee Information</div>
+    <div class="form-grid">
+      <div>
+        <label>Employee Owner</label>
+        <input type="text" value="Smith, Miley">
+        <label>Middle Name</label>
+        <input type="text">
+        <label>Birth Date</label>
+        <input type="date">
+        <label>Street</label>
+        <input type="text">
+        <label>Address One</label>
+        <textarea></textarea>
+        <label>City</label>
+        <input type="text">
+        <label>Phone</label>
+        <input type="text">
+        <label>E-Mail</label>
+        <input type="email">
+        <label>Background Check</label>
+        <input type="checkbox">
+      </div>
+
+      <div>
+        <label>First Name</label>
+        <select><option>-- None --</option></select>
+        <label>Last Name</label>
+        <input type="text">
+        <label>Employee Number</label>
+        <input type="text" value="EN7010008189">
+        <label>Address Two</label>
+        <textarea></textarea>
+        <label>State</label>
+        <input type="text">
+        <label>Country</label>
+        <select><option>-- None --</option></select>
+        <label>Cell</label>
+        <input type="text">
+        <label>SSN/SIN Verified</label>
+        <input type="checkbox">
+      </div>
+    </div>
+
+    <br>
+    <div class="section-title">Job Information</div>
+    <div class="form-grid">
+      <div>
+        <label>Title</label>
+        <input type="text">
+        <label>Division</label>
+        <input type="text">
+        <label>Start Date</label>
+        <input type="date">
+      </div>
+      <div>
+        <label>Department</label>
+        <input type="text">
+        <label>Annual Salary</label>
+        <input type="number">
+        <label>End Date</label>
+        <input type="date">
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <h4>Search</h4>
+    <input type="text" placeholder="Search...">
+    <button>Go</button>
+    <hr>
+    <h4>Recent Records</h4>
+    <ul>
+      <li>CRM Form Users1</li>
+      <li>Ricardo Velez</li>
+      <li>Kathleen Water</li>
+      <li>Daniel Kenny</li>
+      <li>De Wolf</li>
+    </ul>
+  </div>
+
+</body>
+</html>

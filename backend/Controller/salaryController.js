@@ -1,5 +1,6 @@
 import attendanceRegisterModel from "../Models/attendanceRegisterModel.js"
 import Employee from "../Models/employeeModel.js"
+import SalaryModel from "../Models/salaryModel.js"
 class Salary {
 
     async Calculate(req, res) {
@@ -101,8 +102,58 @@ class Salary {
         }
     }
 
-    async SalaryExcelUpload(req, res){
-        
+    async ExcelSalaryUpload(req, res) {
+        try {
+            const { finaldata } = req;
+    
+            if (!finaldata || !Array.isArray(finaldata) || finaldata.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'No valid data received from Excel upload.',
+                });
+            }
+            const cleanedData = finaldata.filter(record => record.emp_code);
+            
+            // Insert into MongoDB
+            const ack = await SalaryModel.insertMany(cleanedData);
+            return res.status(200).json({
+                success: true,
+                message: 'Upload data successful and inserted into database',
+                data: cleanedData,
+            });
+    
+        } catch (error) {
+            console.error('Error in ExcelSalaryUpload:', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Server error while uploading data.',
+                error: error.message,
+            });
+        }
+    }
+    
+
+    async getSalaryData(req, res) {
+        try {
+            const limit = parseInt(req.query.limit) || 10;
+            const page = parseInt(req.query.page) || 1;
+
+            const skip = (page - 1) * limit;
+
+            const records = await SalaryModel.find({}).skip(skip).limit(limit);
+            const total = await SalaryModel.countDocuments();
+
+            return res.status(200).json({
+                message: 'Paginated Salary data',
+                data: records,
+                total,
+                page,
+                totalPages: Math.ceil(total / limit)
+            });
+        } catch (error) {
+            console.error('Error fetching Salary data:', error);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
     }
 }
 

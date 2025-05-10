@@ -9,7 +9,7 @@ const Navbar = () => {
                 <ul className='flex flex-row gap-3'>
                     <li><Link to={'/'}>Add New Employee</Link></li>
                     <li><Link to={'/attendence'}>Attendence</Link></li>
-                    <li>Home</li>
+                    <li><Link to={'/salary'}>Salary</Link></li>
                 </ul>
             </div>
         </nav>

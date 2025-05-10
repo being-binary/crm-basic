@@ -5,6 +5,7 @@ import employeeRouter from "./Router/employeeRouter.js";
 import attendanceRouter from './Router/atttendanceRoutes.js'
 import salaryController from "./Controller/salaryController.js";
 import { userRouter } from "./Router/userRouter.js";
+import salaryRouter from "./Router/salaryRouter.js";
 import cors from 'cors'
 const port = 8080
 const app = express();
@@ -25,6 +26,7 @@ app.use('/users',userRouter)
 app.use('/employee', employeeRouter)
 app.use('/fileUpload', fileUploadRoutes)
 app.use('/attendance', attendanceRouter)
+app.use('/salary', salaryRouter)
 connectdb().then(()=>{
     app.listen(port,()=>{
         console.log(`Server is listening on http://localhost:${port}`)

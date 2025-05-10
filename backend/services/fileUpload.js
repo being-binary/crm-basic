@@ -130,6 +130,81 @@ class FileUpload {
             res.status(400).json({ message: err.message, success: false });
         }
     }
+
+    async uploadSalaryFiles(req, res, next) {
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ msg: 'No files uploaded', success: false });
+        }
+    
+        try {
+            const finalData = [];
+    
+            const file = req.files[0]; // Only first file
+            const workbook = new ExcelJS.Workbook();
+            await workbook.xlsx.readFile(file.path);
+    
+            const sheet = workbook.worksheets[0]; // Only first sheet
+            console.log(`Processing sheet: ${sheet.name}`);
+    
+            const getCellValue = (cell) => {
+                if (cell && typeof cell === 'object') {
+                    if ('result' in cell) return cell.result;
+                    return 0;
+                }
+                return cell || 0;
+            };
+    
+            sheet.eachRow((row, rowNumber) => {
+                if (rowNumber <= 1) return; // Skip headers
+                const values = row.values;
+                const record = {    
+                    div: getCellValue(values[2]),
+                    emp_code: getCellValue(values[3]),
+                    name: getCellValue(values[4]),
+                    contractor: getCellValue(values[5]),
+                    costCenter: getCellValue(values[6]),
+                    nos: getCellValue(values[7]),
+                    workCentre: getCellValue(values[8]),
+                    ibasRate: parseFloat(getCellValue(values[9])),
+                    salaryDays: parseFloat(getCellValue(values[10])),
+                    companyDays: parseFloat(getCellValue(values[11])),
+                    otHours: parseFloat(getCellValue(values[12])),
+                    totalEarnAmt: parseFloat(getCellValue(values[13])),
+                    totalOtAmt: parseFloat(getCellValue(values[14])),
+                    pfAmt: parseFloat(getCellValue(values[15])),
+                    admPf: (parseFloat(getCellValue(values[16]))),
+                    edli: parseFloat(getCellValue(values[17])),
+                    esi: parseFloat(getCellValue(values[18])),
+                    tenRsPerCom: parseFloat(getCellValue(values[19])),
+                    total: parseFloat(getCellValue(values[20])),
+                    pfcAmt: parseFloat(getCellValue(values[21])),
+                    epsAmt: parseFloat(getCellValue(values[22])),
+                    esicDed: parseFloat(getCellValue(values[23])),
+                    messDed: parseFloat(getCellValue(values[24])),
+                    club: parseFloat(getCellValue(values[25])),
+                    lwfDed: parseFloat(getCellValue(values[26])),
+                    totalDed: parseFloat(getCellValue(values[27])),
+                    netPay: parseFloat(getCellValue(values[28])),
+                    tpa: parseFloat(getCellValue(values[29])),
+                    salary: parseFloat(getCellValue(values[30])),
+                    sheet: sheet.name,
+                };
+                finalData.push(record);
+            });
+    
+            // Clean up file
+            fs.unlink(file.path, (err) => {
+                if (err) console.error('Error deleting file:', err);
+            });
+    
+            req.finaldata = finalData;
+            return next();
+    
+        } catch (err) {
+            console.error('Upload processing failed:', err);
+            return res.status(400).json({ message: err.message, success: false });
+        }
+    }
 }
 
 export default new FileUpload()
