@@ -31,7 +31,7 @@ const Attendence = ({ data, setData }) => {
       files.forEach((file, index) => formData.append(`file`, file));
       const response = await fetch(`${import.meta.env.VITE_PRODUCTION == 'true' ? import.meta.env.VITE_URL_LIVE : import.meta.env.VITE_URL_LOCAL}/attendance/getdata?page=${page}&limit=10`, {
         method: 'GET',
-        credentials: 'include',
+        // credentials: 'include',
       })
       const result = await response.json();
       if (response.ok) {
@@ -56,7 +56,7 @@ const Attendence = ({ data, setData }) => {
       files.forEach((file, index) => formData.append(`file`, file));
       const response = await fetch(`${import.meta.env.VITE_PRODUCTION == 'true' ? import.meta.env.VITE_URL_LIVE : import.meta.env.VITE_URL_LOCAL}/fileUpload/file`, {
         method: 'POST',
-        credentials: 'include',
+        // credentials: 'include',
         body: formData,
       })
       const result = await response.json();

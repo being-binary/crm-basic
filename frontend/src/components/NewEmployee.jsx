@@ -43,7 +43,7 @@ const NewEmployee = () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_PRODUCTION == 'true' ? import.meta.env.VITE_URL_LIVE : import.meta.env.VITE_URL_LOCAL}/employee/setdata`, {
         method: 'POST',
-        credentials: 'include',
+        // credentials: 'include',
         body: formData,
       })
       const result = await response.json();
